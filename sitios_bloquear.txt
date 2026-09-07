@@ -1,14 +1,1 @@
-# Bloqueo de sitios web personalizado
-0.0.0.0 friv.com
-0.0.0.0 www.friv.com
-0.0.0.0 instagram.com
-0.0.0.0 www.instagram.com
-0.0.0.0 x.com
-0.0.0.0 www.x.com
-0.0.0.0 tiktok.com
-0.0.0.0 www.tiktok.com
-0.0.0.0 facebook.com
-0.0.0.0 www.facebook.com
-0.0.0.0 poki.com
-0.0.0.0 www.poki.com
-0.0.0.0 www.netflix.com
+
