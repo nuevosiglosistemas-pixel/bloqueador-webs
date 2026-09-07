@@ -1,1 +1,3 @@
-instagram
+# Bloqueo de sitios web personalizado
+0.0.0.0 instagram.com
+0.0.0.0 www.instagram.com
