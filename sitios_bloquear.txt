@@ -11,3 +11,4 @@
 0.0.0.0 www.facebook.com
 0.0.0.0 poki.com
 0.0.0.0 www.poki.com
+0.0.0.0 www.netflix.com
