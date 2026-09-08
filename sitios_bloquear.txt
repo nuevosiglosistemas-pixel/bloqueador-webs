@@ -1,3 +1,13 @@
-# Bloqueo de sitios web personalizado
-0.0.0.0 instagram.com
-0.0.0.0 www.instagram.com
+# Bloqueo de sitios google
+friv.com
+instagram.com
+x.com
+tiktok.com
+facebook.com
+poki.com
+garticphone.com
+makeitmeme.com
+potrerofutbol.ar
+steamcommunity.com
+copero.com.ar
+jklm.fun
