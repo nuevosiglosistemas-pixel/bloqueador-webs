@@ -17,4 +17,4 @@ cba.betsson.bet.ar
 mercadolibre.com.ar
 temu.com
 uala.com.ar
-bancor.com.ar/
+bancor.com.ar
