@@ -17,3 +17,4 @@ cba.betsson.bet.ar
 mercadolibre.com.ar
 temu.com
 uala.com
+uala.com.ar
