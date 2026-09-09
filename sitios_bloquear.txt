@@ -20,3 +20,4 @@ uala.com.ar
 bancor.com.ar
 ospesalud.com.ar
 bna.com.ar
+netflix.com
