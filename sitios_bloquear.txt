@@ -24,3 +24,4 @@ netflix.com
 flow.com
 listo.com
 xxx.com
+bancopatagonia.com.ar
