@@ -31,3 +31,4 @@ twitch.tv
 netflix.com
 linkedin.com
 opera.com
+autoupdate.opera.com
