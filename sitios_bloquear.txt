@@ -27,3 +27,4 @@ twitter.com
 fbcdn.net
 messenger.com
 twimg.com
+twitch.tv
