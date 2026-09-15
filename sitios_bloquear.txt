@@ -26,3 +26,4 @@ snapchat.com
 twitter.com
 fbcdn.net
 messenger.com
+twimg.com
