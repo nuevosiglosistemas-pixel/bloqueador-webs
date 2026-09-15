@@ -25,3 +25,4 @@ web.telegram.org
 snapchat.com
 twitter.com
 fbcdn.net
+messenger.com
