@@ -29,3 +29,4 @@ messenger.com
 twimg.com
 twitch.tv
 netflix.com
+linkedin.com
