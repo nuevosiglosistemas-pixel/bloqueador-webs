@@ -22,3 +22,4 @@ chat.google.com
 meet.google.con
 web.whatsapp.com
 web.telegram.org
+snapchat.com
