@@ -32,3 +32,4 @@ netflix.com
 linkedin.com
 opera.com
 autoupdate.opera.com
+Yahoo.com
