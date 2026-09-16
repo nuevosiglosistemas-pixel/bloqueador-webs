@@ -33,3 +33,4 @@ linkedin.com
 opera.com
 autoupdate.opera.com
 Yahoo.com
+xbox.com
