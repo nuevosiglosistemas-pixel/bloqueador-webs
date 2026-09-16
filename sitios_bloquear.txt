@@ -35,3 +35,4 @@ autoupdate.opera.com
 Yahoo.com
 xbox.com
 car-soccer.top
+https://crossyroadgame.io/
