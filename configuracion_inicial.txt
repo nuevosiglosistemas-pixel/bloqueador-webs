@@ -1,1 +1,5 @@
-prueba
+
+echo.
+echo Limpieza completada con exito.
+timeout /t 5
+exit
