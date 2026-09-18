@@ -1,31 +1,18 @@
 @echo off
-title Limpiador Avanzado y Papelera
+title Activando politicas de seguridad local - Ares sistemas Nuevo Siglo
 color 0A
 
 echo ========================================================
-echo         LIMPIEZA DE TEMPORALES Y PAPELERA
+echo   Activando politicas de seguridad local
+echo   Ares sistemas Nuevo Siglo
 echo ========================================================
 echo.
 
-echo [1/4] Limpiando archivos temporales de Usuario...
-del /s /f /q "%temp%\*.*" >nul 2>&1
-rd /s /q "%temp%" >nul 2>&1
-md "%temp%" >nul 2>&1
-
-echo [2/4] Limpiando archivos temporales del Sistema...
-del /s /f /q "C:\Windows\Temp\*.*" >nul 2>&1
-rd /s /q "C:\Windows\Temp" >nul 2>&1
-md "C:\Windows\Temp" >nul 2>&1
-
-echo [3/4] Limpiando Prefetch...
-del /s /f /q "C:\Windows\Prefetch\*.*" >nul 2>&1
-
-echo [4/4] Vaciando la Papelera de reciclaje...
-powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
+echo Aplicando politicas del sistema...
+:: (Aquí puedes poner los comandos que necesites que ejecute tu política)
+timeout /t 1 /nobreak >nul
 
 echo.
 echo ========================================================
-echo            ¡LIMPIEZA COMPLETADA CON ÉXITO!
+echo   ¡POLITICAS APLICADAS CON EXITO!
 echo ========================================================
-echo.
-pause
