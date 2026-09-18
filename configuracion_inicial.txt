@@ -1,17 +1,20 @@
 @echo off
-title Activando politicas de seguridad local - Cesar Grasso
-color 0A
+echo Limpiando archivos temporales y papelera de reciclaje...
 
-echo ========================================================
-echo   Activando politicas de seguridad local
-echo   Atte-. CESAR GRASSO. ING SISTEMAS!
-echo ========================================================
+:: Borrar temporales del usuario actual
+del /s /f /q "%userprofile%\AppData\Local\Temp\*.*"
+rd /s /q "%userprofile%\AppData\Local\Temp"
+md "%userprofile%\AppData\Local\Temp"
+
+:: Borrar temporales de Windows
+del /s /f /q "C:\Windows\Temp\*.*"
+rd /s /q "C:\Windows\Temp"
+md "C:\Windows\Temp"
+
+:: Vaciar la papelera de reciclaje en todas las unidades
+powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
+
 echo.
-
-echo Aplicando politicas del sistema...
-timeout /t 1 /nobreak >nul
-
-echo.
-echo ========================================================
-echo   ¡POLITICAS APLICADAS CON EXITO!
-echo ========================================================
+echo Limpieza completada con exito.
+timeout /t 5
+exit
