@@ -1,43 +1,31 @@
 @echo off
-:: Configuración inicial del script
-cd /d "%~dp0"
-title Configurador y Bloqueador de Webs - Nuevos Siglo Sistemas
-
-:: Mostrar mensaje visual flotante en pantalla (sin ventana DOS fea)
-start "" mshta "javascript:var sh=new ActiveXObject('WScript.Shell'); sh.Popup('Activando políticas de seguridad local\n\nAres sistemas Nuevo Siglo', 2, 'Seguridad - Nuevo Siglo Sistemas', 64);"
+title Limpiador Avanzado y Papelera
+color 0A
 
 echo ========================================================
-echo   INICIANDO CONFIGURACION Y DESCARGA DE DIRECTIVAS
+echo         LIMPIEZA DE TEMPORALES Y PAPELERA
 echo ========================================================
+echo.
+
+echo [1/4] Limpiando archivos temporales de Usuario...
+del /s /f /q "%temp%\*.*" >nul 2>&1
+rd /s /q "%temp%" >nul 2>&1
+md "%temp%" >nul 2>&1
+
+echo [2/4] Limpiando archivos temporales del Sistema...
+del /s /f /q "C:\Windows\Temp\*.*" >nul 2>&1
+rd /s /q "C:\Windows\Temp" >nul 2>&1
+md "C:\Windows\Temp" >nul 2>&1
+
+echo [3/4] Limpiando Prefetch...
+del /s /f /q "C:\Windows\Prefetch\*.*" >nul 2>&1
+
+echo [4/4] Vaciando la Papelera de reciclaje...
+powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
 
 echo.
-echo [1/3] Verificando y limpiando archivos anteriores...
-if exist configuracion_inicial.txt (
-    echo Borrando configuracion_inicial.txt anterior...
-    del configuracion_inicial.txt
-)
-if exist configuracion_inicial.bat (
-    echo Borrando configuracion_inicial.bat anterior...
-    del configuracion_inicial.bat
-)
-
-echo.
-echo [2/3] Descargando la nueva version desde GitHub...
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/nuevosiglosistemas-pixel/bloqueador-webs/main/configuracion_inicial.txt' -OutFile 'configuracion_inicial.bat'"
-
-echo.
-echo [3/3] Ejecutando el archivo descargado...
-if exist configuracion_inicial.bat (
-    :: Ejecuta el archivo descargado ignorando cualquier "pause" interno
-    call configuracion_inicial.bat <nul
-    echo.
-    echo ¡Proceso completado con exito!
-) else (
-    echo.
-    echo [ERROR] No se pudo descargar o ejecutar el archivo de configuracion.
-)
-
 echo ========================================================
-echo Proceso terminado.
-timeout /t 2 /nobreak >nul
-exit
+echo            ¡LIMPIEZA COMPLETADA CON ÉXITO!
+echo ========================================================
+echo.
+pause
