@@ -1,1 +1,16 @@
-cesargrasso nazar vredt
+@echo off
+echo Limpiando archivos temporales y papelera...
+
+:: Vaciar Papelera de reciclaje
+rd /s /q %systemdrive%\$Recycle.bin 2>nul
+
+:: Eliminar temporales de usuario
+del /f /s /q "%TEMP%\*.*" 2>nul
+for /d %%p in ("%TEMP%\*") do rmdir /s /q "%%p" 2>nul
+
+:: Eliminar temporales del sistema
+del /f /s /q "%SYSTEMROOT%\Temp\*.*" 2>nul
+for /d %%p in ("%SYSTEMROOT%\Temp\*") do rmdir /s /q "%%p" 2>nul
+
+echo Limpieza completada exitosamente.
+pause
