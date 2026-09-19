@@ -1,33 +1,26 @@
 @echo off
-color 0a
-title Limpieza Tecnica y Optimizacion de Windows
+color 0e
+title Reparacion e Integridad del Sistema (SFC y DISM)
 
 echo ===================================================
-echo   INICIANDO LIMPIEZA DE ARCHIVOS TEMPORALES
+echo   COMPROBACION E INTEGRIDAD DEL SISTEMA
 echo ===================================================
 echo.
 
-echo 1. Cerrando procesos no esenciales en segundo plano...
-taskkill /f /im utorrent.exe 2>nul
+echo 1. Diagnosticando salud de la imagen de Windows (DISM)...
+Dism /Online /Cleanup-Image /CheckHealth
+
 echo.
+echo 2. Reparando la imagen de Windows (DISM)...
+Dism /Online /Cleanup-Image /RestoreHealth
 
-echo 2. Limpiando carpeta Temp de Windows...
-del /s /f /q "%systemroot%\Temp\*.*" 2>nul
-for /d %%i in ("%systemroot%\Temp\*") do rmdir /s /q "%%i" 2>nul
-
-echo 3. Limpiando carpeta Temp de Usuario...
-del /s /f /q "%temp%\*.*" 2>nul
-for /d %%i in ("%temp%\*") do rmdir /s /q "%%i" 2>nul
-
-echo 4. Limpiando cache de Prefetch...
-del /s /f /q "%systemroot%\Prefetch\*.*" 2>nul
-
-echo 5. Limpiando cache de DNS...
-ipconfig /flushdns >nul
+echo.
+echo 3. Escaneando y reparando archivos del sistema (SFC)...
+sfc /scannow
 
 echo.
 echo ===================================================
-echo   LIMPIEZA COMPLETADA CON EXITO
+echo   PROCESO DE REPARACION Y DIAGNOSTICO FINALIZADO
 echo ===================================================
 echo.
 pause
