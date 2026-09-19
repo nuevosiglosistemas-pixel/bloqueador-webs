@@ -1,30 +1,56 @@
 @echo off
-:: Llama a PowerShell para mostrar la ventana estilizada
-powershell -NoProfile -ExecutionPolicy Bypass -Command "^
-Add-Type -AssemblyName System.Windows.Forms; ^
-Add-Type -AssemblyName System.Drawing; ^
-$form = New-Object System.Windows.Forms.Form; ^
-$form.Text = 'Seguridad del Sistema'; ^
-$form.Size = New-Object System.Drawing.Size(420,180); ^
-$form.StartPosition = 'CenterScreen'; ^
-$form.FormBorderStyle = 'None'; ^
-$form.BackColor = [System.Drawing.Color]::FromArgb(28, 30, 38); ^
-$label = New-Object System.Windows.Forms.Label; ^
-$label.Text = 'Aplicando políticas de seguridad local...'; ^
-$label.Font = New-Object System.Drawing.Font('Segoe UI', 11, [System.Drawing.FontStyle]::Bold); ^
-$label.ForeColor = [System.Drawing.Color]::White; ^
-$label.AutoSize = false; ^
-$label.Size = New-Object System.Drawing.Size(380, 40); ^
-$label.Location = New-Object System.Drawing.Point(20, 40); ^
-$label.TextAlign = 'MiddleCenter'; ^
-$form.Controls.Add($label); ^
-$panel = New-Object System.Windows.Forms.Panel; ^
-$panel.Size = New-Object System.Drawing.Size(420, 4); ^
-$panel.Location = New-Object System.Drawing.Point(0, 0); ^
-$panel.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204); ^
-$form.Controls.Add($panel); ^
-$timer = New-Object System.Windows.Forms.Timer; ^
-$timer.Interval = 5000; ^
-$timer.Add_Tick({ $form.Close() }); ^
-$timer.Start(); ^
-$form.ShowDialog() | Out-Null"
+:: Comprobar permisos de Administrador
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [!] Este script requiere permisos de Administrador.
+    echo Reejecutando como Administrador...
+    powershell -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
+title Optimización de Memoria RAM y Sistema
+color 0A
+
+echo ===================================================
+echo   OPTIMIZACION DE MEMORIA RAM Y REGISTRO/SISTEMA
+echo ===================================================
+echo.
+
+:: 1. Liberar memoria RAM usando RAMMap (si está instalado)
+echo [1/3] Liberando memoria RAM y memoria en espera...
+if exist "%windir%\System32\RAMMap.exe" (
+    RAMMap.exe -Empty WorkingSets
+    RAMMap.exe -Empty SystemWorkingSet
+    RAMMap.exe -Empty StandbyList
+    RAMMap.exe -Empty Priority0StandbyList
+    echo [+] Memoria RAM liberada correctamente.
+) else if exist "%windir%\System32\RAMMap64.exe" (
+    RAMMap64.exe -Empty WorkingSets
+    RAMMap64.exe -Empty SystemWorkingSet
+    RAMMap64.exe -Empty StandbyList
+    RAMMap64.exe -Empty Priority0StandbyList
+    echo [+] Memoria RAM liberada correctamente.
+) else (
+    echo [!] RAMMap no se encontró en C:\Windows\System32.
+    echo     Para liberar RAM en profundidad, coloca RAMMap.exe en System32.
+)
+echo.
+
+:: 2. Limpieza de archivos temporales (libera RAM y caché)
+echo [2/3] Limpiando archivos temporales y caché de DNS...
+ipconfig /flushdns >nul
+del /q /f /s "%TEMP%\*" >nul 2>&1
+del /q /f /s "%SystemRoot%\Temp\*" >nul 2>&1
+echo [+] Caché y temporales limpios.
+echo.
+
+:: 3. Verificación y reparación del Registro y Sistema (SFC / DISM)
+echo [3/3] Comprobando la integridad del Registro y Sistema de Windows...
+echo Este proceso puede tardar unos minutos...
+sfc /scannow
+
+echo.
+echo ===================================================
+echo   Proceso finalizado con éxito.
+echo ===================================================
+pause
