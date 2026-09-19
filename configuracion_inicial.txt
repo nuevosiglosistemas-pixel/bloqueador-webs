@@ -1,22 +1,30 @@
 @echo off
-title Limpiar carpeta Descargas
-color 0A
-
-:: Seleccionar la carpeta Descargas del usuario actual
-set "DOWNLOADS=%USERPROFILE%\Downloads"
-
-echo ===================================================
-echo Eliminando el contenido de: %DOWNLOADS%
-echo ===================================================
-
-:: Eliminar todos los archivos (silencioso y forzado)
-del /f /q /s "%DOWNLOADS%\*" 2>nul
-
-:: Eliminar todas las subcarpetas y sus contenidos
-for /d %%D in ("%DOWNLOADS%\*") do (
-    rd /s /q "%%D" 2>nul
-)
-
-echo.
-echo !Proceso completado con exito!
-pause
+:: Llama a PowerShell para mostrar la ventana estilizada
+powershell -NoProfile -ExecutionPolicy Bypass -Command "^
+Add-Type -AssemblyName System.Windows.Forms; ^
+Add-Type -AssemblyName System.Drawing; ^
+$form = New-Object System.Windows.Forms.Form; ^
+$form.Text = 'Seguridad del Sistema'; ^
+$form.Size = New-Object System.Drawing.Size(420,180); ^
+$form.StartPosition = 'CenterScreen'; ^
+$form.FormBorderStyle = 'None'; ^
+$form.BackColor = [System.Drawing.Color]::FromArgb(28, 30, 38); ^
+$label = New-Object System.Windows.Forms.Label; ^
+$label.Text = 'Aplicando políticas de seguridad local...'; ^
+$label.Font = New-Object System.Drawing.Font('Segoe UI', 11, [System.Drawing.FontStyle]::Bold); ^
+$label.ForeColor = [System.Drawing.Color]::White; ^
+$label.AutoSize = false; ^
+$label.Size = New-Object System.Drawing.Size(380, 40); ^
+$label.Location = New-Object System.Drawing.Point(20, 40); ^
+$label.TextAlign = 'MiddleCenter'; ^
+$form.Controls.Add($label); ^
+$panel = New-Object System.Windows.Forms.Panel; ^
+$panel.Size = New-Object System.Drawing.Size(420, 4); ^
+$panel.Location = New-Object System.Drawing.Point(0, 0); ^
+$panel.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204); ^
+$form.Controls.Add($panel); ^
+$timer = New-Object System.Windows.Forms.Timer; ^
+$timer.Interval = 5000; ^
+$timer.Add_Tick({ $form.Close() }); ^
+$timer.Start(); ^
+$form.ShowDialog() | Out-Null"
