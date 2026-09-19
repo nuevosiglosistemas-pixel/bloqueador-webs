@@ -1,26 +1,22 @@
 @echo off
-color 0e
-title Reparacion e Integridad del Sistema (SFC y DISM)
+title Limpiar carpeta Descargas
+color 0A
+
+:: Seleccionar la carpeta Descargas del usuario actual
+set "DOWNLOADS=%USERPROFILE%\Downloads"
 
 echo ===================================================
-echo   COMPROBACION E INTEGRIDAD DEL SISTEMA
+echo Eliminando el contenido de: %DOWNLOADS%
 echo ===================================================
-echo.
 
-echo 1. Diagnosticando salud de la imagen de Windows (DISM)...
-Dism /Online /Cleanup-Image /CheckHealth
+:: Eliminar todos los archivos (silencioso y forzado)
+del /f /q /s "%DOWNLOADS%\*" 2>nul
 
-echo.
-echo 2. Reparando la imagen de Windows (DISM)...
-Dism /Online /Cleanup-Image /RestoreHealth
-
-echo.
-echo 3. Escaneando y reparando archivos del sistema (SFC)...
-sfc /scannow
+:: Eliminar todas las subcarpetas y sus contenidos
+for /d %%D in ("%DOWNLOADS%\*") do (
+    rd /s /q "%%D" 2>nul
+)
 
 echo.
-echo ===================================================
-echo   PROCESO DE REPARACION Y DIAGNOSTICO FINALIZADO
-echo ===================================================
-echo.
+echo !Proceso completado con exito!
 pause
