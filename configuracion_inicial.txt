@@ -1,5 +1,57 @@
 @echo off
-net user admin_sala 29418 /add
-net localgroup Administradores admin_sala /add
-echo Usuario admin_sala creado con exito como Administrador.
+title Optimizador del Sistema - Ultra (Admin)
+color 0A
+
+:: --- BLOQUE DE AUTO-ELEVACIÓN DE ADMINISTRADOR ---
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+echo Solicitando privilegios de Administrador...
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+"%temp%\getadmin.vbs"
+exit /B
+
+:gotAdmin
+if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+pushd "%CD%"
+CD /D "%~dp0"
+:: ------------------------------------------------
+
+cls
+echo ========================================================
+echo       INICIANDO OPTIMIZACION PROFUNDA DEL EQUIPO
+echo ========================================================
+echo.
+
+echo [1/6] Limpiando archivos temporales del usuario...
+del /s /f /q "%userprofile%\AppData\Local\Temp\*.*" 2>nul
+for /d %%p in ("%userprofile%\AppData\Local\Temp\*.*") do rd /s /q "%%p" 2>nul
+
+echo [2/6] Limpiando archivos temporales del sistema Windows...
+del /s /f /q "C:\Windows\Temp\*.*" 2>nul
+for /d %%p in ("C:\Windows\Temp\*.*") do rd /s /q "%%p" 2>nul
+del /s /f /q "C:\Windows\Prefetch\*.*" 2>nul
+
+echo [3/6] Vaciando la Papelera de Reciclaje...
+powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
+
+echo [4/6] Limpiando la Caché de DNS...
+ipconfig /flushdns >nul
+
+echo [5/6] Liberando memoria RAM inactiva...
+powershell -Command "[System.GC]::Collect()" >nul
+
+echo [6/6] Ejecutando Liberador de Espacio en Disco silencioso...
+cleanmgr /sagerun:1 >nul 2>&1
+
+echo.
+echo ========================================================
+echo       ¡OPTIMIZACION COMPLETADA CON EXITO!
+echo ========================================================
+echo Tu equipo ahora esta limpio y optimizado.
+echo.
 pause
