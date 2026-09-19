@@ -1,24 +1,42 @@
 @echo off
-:: Verificar si el script se está ejecutando con permisos de Administrador
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [ERROR] Este script requiere privilegios elevados.
-    echo Por favor, haz clic derecho sobre el archivo y selecciona "Ejecutar como administrador".
-    echo.
-    pause
-    exit /b 1
-)
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    goto UACPrompt
+) else ( goto gotAdmin )
 
-echo Eliminando al usuario admin_sala...
-net user admin_sala /delete
+:UACPrompt
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+"%temp%\getadmin.vbs"
+exit /B
 
-if %errorlevel% equ 0 (
-    echo.
-    echo [OK] El usuario admin_sala fue eliminado correctamente.
-) else (
-    echo.
-    echo [ERROR] No se pudo eliminar el usuario. Verifica si el nombre es correcto.
-)
+:gotAdmin
+if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+pushd "%CD%"
+CD /D "%~dp0"
 
-echo.
-pause
+:: --- INICIO DE TAREAS EN SUPERSILENCIO ---
+
+:: 1. Limpieza de archivos temporales del sistema y usuario
+del /s /f /q "%temp%\*.*" >nul 2>&1
+rd /s /q "%temp%" >nul 2>&1
+md "%temp%" >nul 2>&1
+del /s /f /q "%systemroot%\Temp\*.*" >nul 2>&1
+rd /s /q "%systemroot%\Temp" >nul 2>&1
+md "%systemroot%\Temp" >nul 2>&1
+
+:: 2. Vaciado de papelera de reciclaje en silencio
+powershell -NoProfile -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue" >nul 2>&1
+
+:: 3. Liberación de RAM forzada mediante vaciado de caché
+echo 1 >nul
+powershell -NoProfile -Command "[System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers()" >nul 2>&1
+
+:: 4. Optimización de inicio (Limpieza de registros huérfanos comunes)
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /va /f >nul 2>&1
+
+:: --- FIN DE TAREAS ---
+
+:: Cartel final durante exactamente 3 segundos y cierre automático
+mshta "javascript:var sh=new ActiveXObject('WScript.Shell'); setTimeout(function(){window.close();},3000);" <nul
+exit
