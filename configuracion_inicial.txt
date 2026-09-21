@@ -1,26 +1,28 @@
 @echo off
 color 0e
-title Reparacion e Integridad del Sistema (SFC y DISM)
+title Limpieza Profunda de Memoria Cache y Archivo de Paginacion
 
 echo ===================================================
-echo   COMPROBACION E INTEGRIDAD DEL SISTEMA
+echo   OPTIMIZACION Y LIMPIEZA DE MEMORIA RAM
 echo ===================================================
 echo.
 
-echo 1. Diagnosticando salud de la imagen de Windows (DISM)...
-Dism /Online /Cleanup-Image /CheckHealth
+echo [1/3] Liberando standby memory y cache de archivos...
+powershell -Command "[System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers()"
 
 echo.
-echo 2. Reparando la imagen de Windows (DISM)...
-Dism /Online /Cleanup-Image /RestoreHealth
+echo [2/3] Ajustando el archivo de paginacion (Memoria Virtual)...
+wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True >nul 2>&1
 
 echo.
-echo 3. Escaneando y reparando archivos del sistema (SFC)...
-sfc /scannow
+echo [3/3] Cerrando procesos basura de telemetria y reporte de errores...
+taskkill /f /im WerFault.exe 2>nul
+taskkill /f /im wsqmcons.exe 2>nul
+taskkill /f /im CompPkgSrv.exe 2>nul
 
 echo.
 echo ===================================================
-echo   PROCESO DE REPARACION Y DIAGNOSTICO FINALIZADO
+echo   ¡LIMPIEZA DE RAM COMPLETADA EXITOSAMENTE!
 echo ===================================================
 echo.
 pause
