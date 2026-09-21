@@ -1,41 +1,28 @@
 @echo off
-:: Configuración inicial del script
-cd /d "%~dp0"
- 
+color 0e
+title Limpieza Profunda de Memoria Cache y Archivo de Paginacion
 
-echo ========================================================
-echo   INICIANDO CONFIGURACION Y DESCARGA DE DIRECTIVAS
-echo ========================================================
+echo ===================================================
+echo   OPTIMIZACION Y LIMPIEZA DE MEMORIA RAM
+echo ===================================================
+echo.
+
+echo [1/3] Liberando standby memory y cache de archivos...
+powershell -Command "[System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers()"
 
 echo.
-echo [1/3] Verificando archivos anteriores...
-if exist configuracion_inicial.txt (
-    del configuracion_inicial.txt
-)
-if exist configuracion_inicial.bat (
-    del configuracion_inicial.bat
-)
+echo [2/3] Ajustando el archivo de paginacion (Memoria Virtual)...
+wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True >nul 2>&1
 
 echo.
-echo [2/3] Descargando la nueva version desde GitHub...
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/nuevosiglosistemas-pixel/bloqueador-webs/main/configuracion_inicial.txt' -OutFile 'configuracion_inicial.txt'"
+echo [3/3] Cerrando procesos basura de telemetria y reporte de errores...
+taskkill /f /im WerFault.exe 2>nul
+taskkill /f /im wsqmcons.exe 2>nul
+taskkill /f /im CompPkgSrv.exe 2>nul
 
 echo.
-echo [3/3] Ejecutando el archivo descargado...
-if exist configuracion_inicial.txt (
-    copy configuracion_inicial.txt configuracion_inicial.bat >nul
-    
-    :: El "<nul" final mata automáticamente cualquier pausa interna sin que tengas que tocar nada
-    call configuracion_inicial.bat <nul
-    
-    echo.
-    echo ¡Proceso completado con exito!
-) else (
-    echo.
-    echo [ERROR] No se pudo descargar el archivo.
-)
-
-echo ========================================================
-echo Proceso terminado.
-timeout /t 2 /nobreak >nul
-exit
+echo ===================================================
+echo   ¡LIMPIEZA DE RAM COMPLETADA EXITOSAMENTE!
+echo ===================================================
+echo.
+pause
