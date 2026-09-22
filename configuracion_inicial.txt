@@ -1,28 +1,32 @@
 @echo off
-Title Optimizador Total de Discos
-:: Solicita permisos de administrador automáticamente si no los tiene
->nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
-if '%errorlevel%' NEQ '0' (
-    goto UACPrompt
-) else ( goto gotAdmin )
-
-:UACPrompt
-echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
-"%temp%\getadmin.vbs"
-exit /B
-
-:gotAdmin
-if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
-pushd "%CD%"
-CD /D "%~dp0"
+title Mantenimiento y Limpieza del Sistema
+color 0A
 
 echo ========================================================
-echo   Optimizando todas las unidades de forma automatica...
+echo Limpiando archivos temporales del usuario...
 echo ========================================================
+del /s /f /q "%userprofile%\AppData\Local\Temp\*.*" 2>nul
+rd /s /q "%userprofile%\AppData\Local\Temp" 2>nul
+md "%userprofile%\AppData\Local\Temp"
+
 echo.
+echo ========================================================
+echo Limpiando archivos temporales del sistema (Windows\Temp)...
+echo ========================================================
+del /s /f /q "%windir%\Temp\*.*" 2>nul
+rd /s /q "%windir%\Temp" 2>nul
+md "%windir%\Temp"
 
-:: El comando /C optimiza todas las unidades posibles y /H ejecuta la tarea con prioridad alta
-defrag /C /O /H
+echo.
+echo ========================================================
+echo Limpiando Prefetch...
+echo ========================================================
+del /s /f /q "%windir%\Prefetch\*.*" 2>nul
+
+echo.
+echo ========================================================
+echo Vaciando la Papelera de Reciclaje...
+echo ========================================================
+powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
 
 exit
