@@ -1,28 +1,28 @@
 @echo off
-color 0e
-title Limpieza Profunda de Memoria Cache y Archivo de Paginacion
+Title Optimizador Total de Discos
+:: Solicita permisos de administrador automáticamente si no los tiene
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    goto UACPrompt
+) else ( goto gotAdmin )
 
-echo ===================================================
-echo   OPTIMIZACION Y LIMPIEZA DE MEMORIA RAM
-echo ===================================================
+:UACPrompt
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+"%temp%\getadmin.vbs"
+exit /B
+
+:gotAdmin
+if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+pushd "%CD%"
+CD /D "%~dp0"
+
+echo ========================================================
+echo   Optimizando todas las unidades de forma automatica...
+echo ========================================================
 echo.
 
-echo [1/3] Liberando standby memory y cache de archivos...
-powershell -Command "[System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers()"
+:: El comando /C optimiza todas las unidades posibles y /H ejecuta la tarea con prioridad alta
+defrag /C /O /H
 
-echo.
-echo [2/3] Ajustando el archivo de paginacion (Memoria Virtual)...
-wmic computersystem where name="%computername%" set AutomaticManagedPagefile=True >nul 2>&1
-
-echo.
-echo [3/3] Cerrando procesos basura de telemetria y reporte de errores...
-taskkill /f /im WerFault.exe 2>nul
-taskkill /f /im wsqmcons.exe 2>nul
-taskkill /f /im CompPkgSrv.exe 2>nul
-
-echo.
-echo ===================================================
-echo   ¡LIMPIEZA DE RAM COMPLETADA EXITOSAMENTE!
-echo ===================================================
-echo.
-pause
+exit
