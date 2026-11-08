@@ -1,7 +1,27 @@
 @echo off
-title Mantenimiento y Limpieza del Sistema
+title Mantenimiento, Limpieza y Bloqueo de Webs
 color 0A
 
+:: --- Verificar permisos de administrador ---
+net session >nul 2>&1
+if errorlevel 1 (
+    echo Este script necesita ejecutarse como administrador.
+    echo Click derecho ^> Ejecutar como administrador.
+    pause
+    exit /b 1
+)
+
+echo ========================================================
+echo Actualizando lista de sitios bloqueados...
+echo ========================================================
+call :bloqueo
+if errorlevel 1 (
+    echo No se pudo actualizar el bloqueo ^(sin internet o lista vacia^). Se continua con la limpieza.
+) else (
+    echo Bloqueo actualizado correctamente.
+)
+
+echo.
 echo ========================================================
 echo Limpiando archivos temporales del usuario...
 echo ========================================================
@@ -29,4 +49,39 @@ echo Vaciando la Papelera de Reciclaje...
 echo ========================================================
 powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"
 
-exit
+exit /b 0
+
+
+:: =========================================================
+:: Subrutina: descarga la lista y la aplica a Chrome y Edge
+:: =========================================================
+:bloqueo
+setlocal EnableDelayedExpansion
+set "URL=https://raw.githubusercontent.com/nuevosiglosistemas-pixel/bloqueador-webs/main/sitios_bloquear.txt"
+set "CARPETA=%ProgramData%\BloqueoNavegador"
+set "BAJADA=%CARPETA%\sitios_bloquear.txt"
+set "VALIDOS=%CARPETA%\sitios_validos.txt"
+if not exist "%CARPETA%" mkdir "%CARPETA%"
+del "%BAJADA%" >nul 2>&1
+del "%VALIDOS%" >nul 2>&1
+curl.exe -s -f -L --max-time 30 -o "%BAJADA%" "%URL%?t=%RANDOM%%RANDOM%"
+if errorlevel 1 exit /b 1
+if not exist "%BAJADA%" exit /b 1
+for /f "usebackq eol=# tokens=1" %%L in ("%BAJADA%") do (
+  echo(%%L| findstr /r /x /c:"[A-Za-z0-9.-][A-Za-z0-9.-]*" >nul
+  if not errorlevel 1 >>"%VALIDOS%" echo %%L
+)
+if not exist "%VALIDOS%" exit /b 1
+for %%K in ("HKLM\SOFTWARE\Policies\Google\Chrome" "HKLM\SOFTWARE\Policies\Microsoft\Edge") do (
+  reg delete "%%~K\URLBlocklist" /f >nul 2>&1
+  set "N=0"
+  for /f "usebackq tokens=1" %%S in ("%VALIDOS%") do (
+    set /a N+=1
+    reg add "%%~K\URLBlocklist" /v "!N!" /t REG_SZ /d "%%S" /f >nul 2>&1
+  )
+  reg add "%%~K" /v DnsOverHttpsMode /t REG_SZ /d off /f >nul 2>&1
+)
+taskkill /F /IM chrome.exe /T >nul 2>&1
+taskkill /F /IM msedge.exe /T >nul 2>&1
+taskkill /F /IM firefox.exe /T >nul 2>&1
+exit /b 0
