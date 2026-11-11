@@ -53,3 +53,4 @@ futbol-11.com
 mk9.lauta.site
 popo.com
 play-cs.com
+game.play-cs.com
