@@ -54,3 +54,4 @@ mk9.lauta.site
 popo.com
 play-cs.com
 game.play-cs.com
+crazygames.com
