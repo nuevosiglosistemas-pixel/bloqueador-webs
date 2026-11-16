@@ -56,3 +56,4 @@ play-cs.com
 game.play-cs.com
 crazygames.com
 chess.com
+dos.zone
